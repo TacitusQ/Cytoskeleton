@@ -265,20 +265,27 @@ void initParticle() {
     return;
   }
 
-  /* Let wrapping fraction c (0,2)
-     then z = c * R (if z = 0, c=0, at psi=0)
+  /* 
+     Let c be in interval (0,2)
+         z measures the Center of 3D particle
+	 w is the wrapping fraction (w = c/2)
+     c=0, z=R , w=0
+     c=2, z=-R, w=1
+     c=1, z=0 , w=.5
    */
   double z,c,R;
   
-  c = -0.2; //wrapping fraction (- to place above membrane)
+  c = -0.2; // (c < 0) places particle ABOVE membrane
   R = _pRadius;
   z = R * (1-c);
 
   /* wish to implement boolean toggle that flips initial z and vz */
-  if (_sunrise) {
+  if (_sunrise) 
+  {
     cout << "** swtiching particle direction **" << endl;
 
-    z = -2*z;
+    z = -2*z;   //ham fisted, more precise: z = -z + (1.1)*h;
+    		//  where h is the depth of the spectrin
     _dz = -_dz; //velocity stored as global differential
   }
 
@@ -354,7 +361,7 @@ void initPID() {
   int N = v_balls.size();
   for(int j=0; j<N; j++) { 
 
-    //write pid (1-anchor, 0-spectrin, 2-boarder, 3-ankyrin)
+    //write pid (0-spectrin, 1-actin, 2-boarder, 3-ankyrin)
     fprintf(f1, " %i", v_balls[j].pid);
   }
   fprintf(f1, "\n\n");
@@ -368,8 +375,9 @@ void randInit() {
 }
 
 
-/* Equilibriates the system, 
-   or add desired displacement */
+// Equilibriates the system, 
+//   or add desired displacement 
+/* can delete
 void sysConfig() {
   
   int N = v_balls.size();
@@ -386,4 +394,4 @@ void sysConfig() {
   }
 
 }
-
+*/

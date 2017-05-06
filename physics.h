@@ -144,7 +144,7 @@ void SurfaceForce() {
 
     r = abs(z - z0);
     F = LJforce(r,_sigma); 
-    b->F[2] += -F; //sign?
+    b->F[2] += -F; //push the bead DOWN
   }
 }
 
@@ -218,9 +218,9 @@ double zSurface(double x, double y) {
 /* played at each Physics step */
 void ParticleInteraction() {
 
-  if(!_Particle) {
-    return;
-  }
+  //check that particle IS initialized
+  if(!_Particle) return;
+
 
   double radius = Particle->R;
   double r,d,F;
@@ -241,24 +241,26 @@ void ParticleInteraction() {
     nm = normBall(b,Particle); // points b->P
 
     if ( r < radius ) 
+    // used ONLY in initialization
     {
 
-      F = -5; //F- rides the nm from P->b
+      F = -5; // (-F) rides the nm from P->b
       for (int i=0; i<3; i++) {
-	b->F[i] += F * nm[i];
+	b->F[i] += F * nm[i]; //push the bead OUT
       }
 
     } else { 
-
-      if (r > 1.5 * radius) continue;
+ 
+      //this 1.5 is arbitrary
+      if (r > 1.5 * radius) continue; 
 
       count++;
       d = radius + (_sigma/2); // R_particle + R_interactant
       F = LJforce(r,d);
 
       for (int i=0; i<3; i++) {
-	b->F[i]        -= F *  nm[i];
-	Particle->F[i] += F *  nm[i];
+	b->F[i]        -= F * nm[i];
+	Particle->F[i] += F * nm[i];
       }
 
 

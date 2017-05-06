@@ -23,11 +23,11 @@ void init() {
   /* Read input, Write Log, Set Output, Seed Rand */
   readInput();
   printLog();
-  randInit();
 
   /* Build Cytoskeleton System */
   cout << " initializing system.." << endl;
 
+  randInit();
   meshInit();
   spectrinInit(_nSpectrin);
   initParticle();
