@@ -1,5 +1,4 @@
-/* 
-   This file includes
+/* This file includes
    setDouble()
    setFloat()
    setInt()
@@ -69,12 +68,11 @@ void process(char* in, std::ifstream &fin) {
   if (strcmp(in, "gamma") == 0)   setDouble(_gamma, fin, in);
   if (strcmp(in, "D") == 0)       setDouble(_D, fin, in);
   if (strcmp(in, "k") == 0)       setDouble(_k, fin, in);
-  if (strcmp(in, "lActin") == 0)  setDouble(_lActin, fin, in);
 
   if (strcmp(in, "nSpectrin") == 0) setInt(_nSpectrin,fin,in);
   if (strcmp(in, "tEqGlobal") == 0) setInt(_tEqGlobal,fin,in);
   if (strcmp(in, "tEqLocal") == 0)  setInt(_tEqLocal,fin,in);
-  if (strcmp(in, "nSys") == 0)   setInt(_nSys,fin,in);
+  if (strcmp(in, "SysSize") == 0)   setInt(_nSys,fin,in);
   if (strcmp(in, "nSteps") == 0)    setInt(_nSteps,fin,in);
   if (strcmp(in, "tSamp") == 0)     setInt(_tSamp,fin,in);
 
@@ -85,8 +83,6 @@ void process(char* in, std::ifstream &fin) {
   if (strcmp(in, "Sunrise") == 0) setBool(_sunrise,fin,in);
   if (strcmp(in, "Ankyrin") == 0) setBool(_ankyrin,fin,in);
   if (strcmp(in, "Particle") == 0)  setBool(_Particle,fin,in);
-  if (strcmp(in, "Surface") == 0)  setBool(_surface,fin,in);
-  if (strcmp(in, "SingleSpring") == 0)  setBool(_SingleSpring,fin,in);
 
 
   if (strcmp(in, "Tag") == 0) {
@@ -140,7 +136,7 @@ void checkTime() {
   }
 
   //recalc max time
-  _tMax = _tEqGlobal + (_tSamp * _nSteps);
+  _compute_tMax();
 }
 
 /* this is the main() file */
@@ -196,11 +192,7 @@ void printLog() {
   log << " nSpectrin: " << _nSpectrin << endl;
   log << " particleRadius: " << _pRadius << endl;
   log << " spectrinRadius: " << _sRadius << endl;
-  log << " ankyrin: " << _ankyrin << endl;
-  log << " surface: " << _surface << endl;
   log << " sunrise: " << _sunrise << endl;
-  log << " singlespring: " << _SingleSpring << endl;
-  log << " particle: " << _Particle << endl;
 
   /* physics */
   log << "Physics Parameters" << endl;

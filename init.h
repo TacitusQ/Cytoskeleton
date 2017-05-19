@@ -16,15 +16,7 @@
     toyInit()
  */
 
-
 void meshInit() {
-
-  /* Escape route to simulate Entropic Spring */
-  if (_SingleSpring) {
-    cout << "** Skipping Mesh init!" << endl;
-    toyInit();
-    return;
-  }
 
   int N=_nSys;
   double L = _lActin;
@@ -79,9 +71,7 @@ void springInit() {
 	v_springs.push_back(s);
       }
 
-      if (y == n-1) continue; 
-      // nothing to do for last row
-
+      if (y == n-1) continue;
       Spring s1(j, j+n);
       v_springs.push_back(s1);
 
@@ -108,7 +98,6 @@ void springInit() {
    e1 and e0 stand for elemUP and elemDOWN respectively,
   where an element is the triangular surface element connecting 3 balls
 */
-// : The element and edge code is geometry for membrane, which is under development
 void elemInit() {
 
   Elem *e0, *e1;
@@ -265,27 +254,20 @@ void initParticle() {
     return;
   }
 
-  /* 
-     Let c be in interval (0,2)
-         z measures the Center of 3D particle
-	 w is the wrapping fraction (w = c/2)
-     c=0, z=R , w=0
-     c=2, z=-R, w=1
-     c=1, z=0 , w=.5
+  /* Let wrapping fraction c (0,2)
+     then z = c * R (if z = 0, c=0, at psi=0)
    */
   double z,c,R;
   
-  c = -0.2; // (c < 0) places particle ABOVE membrane
+  c = -0.2; //wrapping fraction (- to place above membrane)
   R = _pRadius;
   z = R * (1-c);
 
   /* wish to implement boolean toggle that flips initial z and vz */
-  if (_sunrise) 
-  {
+  if (_sunrise) {
     cout << "** swtiching particle direction **" << endl;
 
-    z = -2*z;   //ham fisted, more precise: z = -z + (1.1)*h;
-    		//  where h is the depth of the spectrin
+    z = -2*z;
     _dz = -_dz; //velocity stored as global differential
   }
 
@@ -304,18 +286,16 @@ void fileInit() {
   f1 = fopen("balls.dat", "w");
   f2 = fopen("springs.dat", "w");
   //  f3 = fopen("force.txt", "w");
-
+  //  f4 = fopen("contour.txt", "w");
   //  f5 = fopen("part.txt", "w");
 
   //  strcat(tag6, _tag.c_str());
   //  strcat(tag7, _tag.c_str());
   if (_fileTag) {
     //    string temp;
-    string s4 = string("contour.") + _tag + string(".txt");
-    string s6 = string("zForce.")  + _tag + string(".txt");
+    string s6 = string("zForce.") + _tag + string(".txt");
     string s7 = string("WrappingEnergy.") + _tag + string(".txt");
 
-    f4 = fopen(s4.c_str(), "w");
     f6 = fopen(s6.c_str(), "w");
     f7 = fopen(s7.c_str(), "w");
 
@@ -331,6 +311,8 @@ void fileInit() {
   nBalls = v_balls.size();
   nSprings = v_springs.size();
 
+  _compute_tMax();
+
   cout << "   predicted time steps: " << _nSteps << endl;
   cout << "   physics steps per render step time: " << _tSamp << endl;
   cout << "   TOTAL differential steps: " << _tMax << endl;
@@ -339,16 +321,17 @@ void fileInit() {
   fprintf(f1, "%i\n\n" , nBalls);
   fprintf(f2, "%i\n\n" , nSprings);
 
+  initPID();
 }
 
 void filesClose() {
   fclose(f1);
   fclose(f2);
-  fclose(f4);
   fclose(f6);
   fclose(f7);
   /*
   fclose(f3);
+  fclose(f4);
   fclose(f5);
   */
 
@@ -358,10 +341,10 @@ void filesClose() {
 /* writes PID */
 void initPID() {
 
-  int N = v_balls.size();
+  int N = nBalls;
   for(int j=0; j<N; j++) { 
 
-    //write pid (0-spectrin, 1-actin, 2-boarder, 3-ankyrin)
+    //write pid (1-anchor, 0-spectrin, 2-boarder, 3-ankyrin)
     fprintf(f1, " %i", v_balls[j].pid);
   }
   fprintf(f1, "\n\n");
@@ -375,9 +358,8 @@ void randInit() {
 }
 
 
-// Equilibriates the system, 
-//   or add desired displacement 
-/* can delete
+/* Equilibriates the system, 
+   or add desired displacement */
 void sysConfig() {
   
   int N = v_balls.size();
@@ -394,4 +376,3 @@ void sysConfig() {
   }
 
 }
-*/

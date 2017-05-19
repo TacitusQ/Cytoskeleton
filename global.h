@@ -7,31 +7,31 @@
 #define PI 3.14159265
 
 using namespace std;
-string _version = "cytoskel2.0_1030";
+string _version = "cytoskel3.0_0519";
 
 /**************
   Control Box
  **************/
 
-int _tEqGlobal = 500; //time to delay before doing analysis
-int _tEqLocal = 50; //time to delay before making measurements
+int _tEqGlobal = 5000; //time to delay before doing analysis
+int _tEqLocal = 5000; //time to delay before making measurements
 
 float _dt = 0.00001;  //time step physics
 
-int _tSamp = 100;      //time pause rendering
-int _nSteps = 300;
-int _tMax = _tEqGlobal + (_tSamp * _nSteps);
+int _tSamp = 5000000; //time pause rendering
+int _nSteps = 500;
+long long int _tMax=0; /* evaluated in init.h */
 
 int _nSys = 3;  //side length is Twice this #
 int _nSpectrin = 10; //number of spectrin Springs between each actin
 double _lActin = 1; //initial length between Actin
 float _sRadius = _lActin / 32;
 float _sigma = _sRadius * 2;
-double _pRadius = 1.1 * _lActin; //particle radius
+double _pRadius = 1.0* _lActin; //particle radius
 double _Contour = 2.5 * _lActin;
 
 double _m = 1;
-double _k = 20; 
+double _k = 100; 
 double _gamma = 1;
 double _D = 1;
 double _epsilon = 1;
@@ -329,4 +329,18 @@ double _pow(double x, int n) {
     ans = ans*x;
   }
   return ans;
+}
+
+/* uses global values 
+ * _tSamp _nSteps _tEqGlobal 
+ * to compute _tMax */ 
+void _compute_tMax() {
+
+//_tMax = ( (long long) _tSamp) * _nSteps + _tEqGlobal;
+	_tMax = 0;
+	_tMax = (long long) _tSamp;
+	_tMax *= _nSteps;
+	_tMax += _tEqGlobal;
+
+	cout << _tMax << endl;
 }
